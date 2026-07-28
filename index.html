@@ -13,6 +13,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .nav button.active{color:white;background:rgba(255,255,255,0.15);border-bottom:3px solid #86efac}
 .nav button:hover{background:rgba(255,255,255,0.1);color:white}
 .nav button .icon{font-size:16px}
+.nav-wrap{position:relative}
+.scroll-fade{position:absolute;top:0;bottom:0;width:28px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:10;display:flex;align-items:center;justify-content:center}
+.scroll-fade.show{opacity:1}
+.scroll-fade.right{right:0;background:linear-gradient(to right,rgba(21,128,61,0),#166534)}
+.scroll-fade.left{left:0;background:linear-gradient(to left,rgba(21,128,61,0),#166534)}
+.scroll-fade span{color:white;font-size:13px}
 .page{display:none;padding:14px;max-width:640px;margin:0 auto}
 .page.active{display:block}
 /* HOME */
@@ -242,7 +248,8 @@ body.so .en-text{display:none}
     <span class="en-text">🌐 Soomaali</span><span class="so-text">🌐 English</span>
   </button>
 </div>
-<nav class="nav">
+<div class="nav-wrap">
+<nav class="nav" id="mainNav">
   <button class="active" onclick="nav('home',this)"><span class="icon">🏠</span><span class="en-text">Home</span><span class="so-text">Hoyga</span></button>
   <button onclick="nav('feed',this)"><span class="icon">📢</span><span class="en-text">Feed</span><span class="so-text">Wararka</span></button>
   <button onclick="nav('crops',this)"><span class="icon">🌾</span><span class="en-text">Crops</span><span class="so-text">Dalagyada</span></button>
@@ -253,6 +260,9 @@ body.so .en-text{display:none}
   <button onclick="nav('checklist',this)"><span class="icon">✅</span><span class="en-text">Checklist</span><span class="so-text">Liiska</span></button>
   <button onclick="nav('farmlog',this)"><span class="icon">📋</span><span class="en-text">My Farm</span><span class="so-text">Beertayda</span></button>
 </nav>
+<div class="scroll-fade left" id="fadeLeft"><span>‹</span></div>
+<div class="scroll-fade right" id="fadeRight"><span>›</span></div>
+</div>
 
 <div id="page-home" class="page active">
   <div class="hero"><div class="logo">🌴</div><h1>DalagLink</h1><p><span class="en-text">Your connection to farming in Somalia</span><span class="so-text">Xiriirkaaga beeraha Soomaaliya</span></p></div>
@@ -999,6 +1009,20 @@ function doPreviewLogout(){
   document.getElementById('accLogoutBtn').style.display = 'none';
   document.getElementById('accountMenu').classList.remove('open');
 }
+
+// ===== NAV SCROLL AFFORDANCE =====
+function updateNavFades(){
+  const navEl = document.getElementById('mainNav');
+  const left = document.getElementById('fadeLeft');
+  const right = document.getElementById('fadeRight');
+  if(!navEl) return;
+  const maxScroll = navEl.scrollWidth - navEl.clientWidth;
+  left.classList.toggle('show', navEl.scrollLeft > 4);
+  right.classList.toggle('show', navEl.scrollLeft < maxScroll - 4);
+}
+document.getElementById('mainNav').addEventListener('scroll', updateNavFades);
+window.addEventListener('resize', updateNavFades);
+updateNavFades();
 </script>
 </body>
 </html>
